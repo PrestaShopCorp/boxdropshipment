@@ -266,7 +266,7 @@
 
       <div class="panel-footer">
         <button class="btn btn-default pull-right" name="submitHomeFeatured" id="module_form_submit_btn" value="1" type="submit">
-          <i class="process-icon-save"></i> Speichern
+          <i class="process-icon-save"></i> {l s='Save' mod='boxdropshipment'}
         </button>
       </div>
     </div>
