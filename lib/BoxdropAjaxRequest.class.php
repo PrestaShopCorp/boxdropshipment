@@ -104,11 +104,12 @@
 			$order_id = (int)Tools::getValue('order_id');
 			$parceldata = array();
 			parse_str(Tools::getValue('parceldata'), $parceldata);
+			$insurance_amount = (isset($parceldata['insurance'])) ? $parceldata['insurance'] : 0;
 			$parceldata = (isset($parceldata['product-parcel'])) ? $parceldata['product-parcel'] : array();
 			$order = new Order($order_id);
 			$boxdrop_order = BoxdropOrder::retrieveByCartId($order->id_cart);
 			$employee_id = $this->context->cookie->__get('id_employee');
-			$smarty_data = $boxdrop_order->createBoxdropShipment($order, $parceldata, $employee_id, $this->sdk);
+			$smarty_data = $boxdrop_order->createBoxdropShipment($order, $parceldata, $insurance_amount, $employee_id, $this->sdk);
 			$this->smarty->assign($smarty_data);
 			return $this->display(realpath(dirname(__FILE__).'/../').'/boxdropshipment.php', 'adminAjaxCreateConsignment.tpl');
 		}

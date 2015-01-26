@@ -70,6 +70,9 @@ var bShipment = {
              '<div class="bshp-fl">'+
                '<div class="bshp-products"></div>'+
                '<div class="bshp-clr"></div>'+
+               '<label for="bshp-insurance" class="bshp-fl bshp-leftm-5 bshp-topm-20">INSURANCE</label>'+
+               '<div class="bshp-clr"></div>'+
+               '<input type="text" class="bshp-fl bshp-biginput bshp-leftm-5" id="bshp-insurance" name="insurance" value="" placeholder="0.00" />'+
                '<input type="button" class="button bshp-fr btn btn-default" name="submit" value="'+bTranslation.btnCreateShipment+'" />'+
                '<div class="clear"></div>'+
              '</div>'+
@@ -77,7 +80,8 @@ var bShipment = {
            '</form>';
 
     this.canvas.html(html);
-    this.canvas.find('input').first().unbind('click').bind('click', function() { boxdrop.shipment.createShipment(); });
+    this.canvas.find('input[type=button]').first().unbind('click').bind('click', function() { boxdrop.shipment.createShipment(); });
+    this.canvas.find('#bshp-insurance').on('keyup', function() { boxdrop.isNumericValue(this, true); if (this.value > 10000) { this.value = 10000; }});
     this.product_form    = this.canvas.find('#bshp-consignment-form');
     this.parcel_wrapper  = this.canvas.find('.bshp-parcels-wrapper').first();
     this.parcel_list     = this.parcel_wrapper.find('.bshp-parcels').first();
@@ -868,5 +872,35 @@ var boxdrop = {
   getAjaxState: function() {
 
     return this.inAjaxRequest;
+  },
+  
+
+  /**
+   * Checks whether a given element contains a number
+   *
+   * @author sweber
+   */
+  isNumericValue: function(element, allow_decimals) {
+
+    var new_value = element.value;
+
+    if (new_value != '') {
+
+      if (allow_decimals) {
+
+        new_value = new_value.replace(/\,/g, '.');
+
+        if (new_value != parseFloat(new_value)) {
+
+          element.value = parseFloat(new_value.replace(/[^0-9\.,]/g, '')).toFixed(2).replace('.', ',');
+        }
+      } else {
+
+        if (new_value !== parseInt(new_value, 10)) {
+
+          element.value = new_value.replace(/[^0-9]/g, '');
+        }
+      }
+    }
   }
 };

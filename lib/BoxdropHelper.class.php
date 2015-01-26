@@ -247,7 +247,6 @@
 			return $sdk;
 		}
 
-
 		/**
 		 * Returns an array out of the given string. 
 		 * Wrapped explode, to avoid creating an array with an empty value upon empty $input 
@@ -264,4 +263,43 @@
 			else 
 				return explode($delimiter, $input);
 		}
+
+	
+	    /**
+	     * Converts user entered form numbers into float values.
+	     *
+	     * @author sweber <sw@boxdrop.com>
+	     * @param  mixed  $number
+	     * @return float
+	     */
+	    public static function convertFormNumberToFloat($number)
+		{
+	      $number = (string) $number;
+	      $has_dot = strpos($number, '.');
+	      $has_comma = strpos($number, ',');
+	      $return = $number;
+	
+	      if ($has_dot !== false && $has_comma !== false)
+	      {
+	        $return = str_replace('.', '',  $return);
+	        $return = str_replace(',', '.', $return);
+	      }
+	      else if ($has_dot !== false && $has_comma === false)
+	      {
+	
+	        /*
+	         * if the dot is used as a decimal divider, let him be.
+	         * otherwise, remove
+	         */
+	        $test = (int) str_replace('.', '', $number);
+	
+	        if ((int) $number == $test)
+	          $return = $test;
+	
+	      }
+	      else if ($has_dot === false && $has_comma !== false)
+	        $return = str_replace(',', '.', $return);
+	
+	      return (float) $return;
+	    }
 	}

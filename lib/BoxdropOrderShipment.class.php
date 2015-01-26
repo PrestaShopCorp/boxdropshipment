@@ -32,6 +32,7 @@
 		public $current_status_l;
 		public $id_order;
 		public $id_order_carrier;
+		public $insurance_amount;
 		public $label;
 		public $order_carrier;
 		public $parcel_count;
@@ -65,6 +66,10 @@
 				'airwaybill' => array(
 					'type' => self::TYPE_STRING,
 					'validate' => 'isString'
+				),
+				'insurance_amount' => array(
+					'type' => self::TYPE_FLOAT,
+					'validate' => 'isUnsignedFloat'
 				),
 				'pickup_date' => array(
 					'type' => self::TYPE_DATE,
