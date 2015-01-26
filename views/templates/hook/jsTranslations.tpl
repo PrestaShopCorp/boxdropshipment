@@ -38,5 +38,6 @@
   txtProduct:      '{l s='product' mod='boxdropshipment' js=1}',
   txtProducts:     '{l s='products' mod='boxdropshipment' js=1}',
   txtRemoveParcel: '{l s='Remove Parcel' mod='boxdropshipment' js=1}'
+  txtInsurance:    '{l s='Insurance' mod='boxdropshipment' js=1}'
 
 };

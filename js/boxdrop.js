@@ -70,7 +70,7 @@ var bShipment = {
              '<div class="bshp-fl">'+
                '<div class="bshp-products"></div>'+
                '<div class="bshp-clr"></div>'+
-               '<label for="bshp-insurance" class="bshp-fl bshp-leftm-5 bshp-topm-20">INSURANCE</label>'+
+               '<label for="bshp-insurance" class="bshp-fl bshp-leftm-5 bshp-topm-20">'+bTranslation.txtInsurance+'</label>'+
                '<div class="bshp-clr"></div>'+
                '<input type="text" class="bshp-fl bshp-biginput bshp-leftm-5" id="bshp-insurance" name="insurance" value="" placeholder="0.00" />'+
                '<input type="button" class="button bshp-fr btn btn-default" name="submit" value="'+bTranslation.btnCreateShipment+'" />'+
