@@ -17,7 +17,7 @@
  */
 
 if (!defined('_PS_VERSION_'))
-    exit;
+	exit;
 
 /**
  * Upgrades a module to 1.0.3.
@@ -27,7 +27,7 @@ if (!defined('_PS_VERSION_'))
  * @param  mixed  $object
  * @return boolean
  */
-function upgrade_module_1_0_3($object)
+function upgrade_module_1_0_3()
 {
 	return Db::getInstance()->execute('ALTER TABLE `'._DB_PREFIX_.'boxdrop_order_shipment` ADD
 	 `insurance_amount` DECIMAL(7,2) NOT NULL DEFAULT \'0.00\' 
