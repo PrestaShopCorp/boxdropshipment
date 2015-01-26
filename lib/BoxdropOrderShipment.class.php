@@ -141,7 +141,11 @@
 			$filename = uniqid($this->id_order.'_'.$this->airwaybill.'_').'.pdf';
 			$this->label = $date_path.$filename;
 			BoxdropHelper::checkAndCreateWriteable($base_path.$date_path);
+			$old_umask = umask();
+			umask(0);
 			file_put_contents($base_path.$date_path.$filename, base64_decode($label));
+			chmod($base_path.$date_path.$filename, 0775);
+			umask($old_umask);
 		}
 
 		/**

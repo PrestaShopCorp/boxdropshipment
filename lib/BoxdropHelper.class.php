@@ -184,7 +184,7 @@
 			{
 				$old_umask = umask();
 				umask(0);
-				mkdir($path, 0774, true);
+				mkdir($path, 0775, true);
 				umask($old_umask);
 			}
 		}
