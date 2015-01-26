@@ -14,13 +14,16 @@
  * @license    http://opensource.org/licenses/afl-3.0.php Academic Free License (AFL 3.0)
  * International Registered Trademark & Property of boxdrop Group AG
  *}
-
 <script>
+  {include file="$tpl_path/jsTranslations.tpl"}
+</script>
+<script type="text/javascript" src="{$module_dir|escape:'htmlall':'UTF-8'}js/boxdrop.js"></script>
+<script type="text/javascript">
   $(document).ready(function() {
+    var carriers = boxdrop.convertEscapedToJSON('{$carriers|escape:"url"}');
 
-    var bshp_products  = boxdrop.convertEscapedToJSON('{$products|escape:"url"}');
-    var bshp_shipments = boxdrop.convertEscapedToJSON('{$shipments|escape:"url"}');
-
-    boxdrop.orderAdminDetail.init(bshp_products, bshp_shipments);
+    boxdrop.init('{$module_dir|escape:'htmlall':'UTF-8'}', '{$token|escape:'htmlall':'UTF-8'}');
+    boxdrop.orderAdminDetail.setOrderId('{$order_id|escape:'htmlall':'UTF-8'}');
+    boxdrop.orderAdminDetail.createCarrierChangeSelect(carriers);
   });
 </script>

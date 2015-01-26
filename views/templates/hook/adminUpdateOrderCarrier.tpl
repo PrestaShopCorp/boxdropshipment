@@ -15,12 +15,9 @@
  * International Registered Trademark & Property of boxdrop Group AG
  *}
 
-<script>
-  $(document).ready(function() {
 
-    var bshp_products  = boxdrop.convertEscapedToJSON('{$products|escape:"url"}');
-    var bshp_shipments = boxdrop.convertEscapedToJSON('{$shipments|escape:"url"}');
+{if {$changed}}
 
-    boxdrop.orderAdminDetail.init(bshp_products, bshp_shipments);
-  });
-</script>
+  document.location.href = document.location.href; 
+{/if}
+

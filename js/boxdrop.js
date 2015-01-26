@@ -327,13 +327,23 @@ var bShipmentOrderAdminDetail = {
   shipment_lines:     '',
 
   /**
-   * prepares all we need
+   * sets the order id
    *
    * @author sweber
    */
-  init: function(products, shipments, order_id) {
+  setOrderId: function(order_id) {
 
-    this.order_id  = order_id;
+    this.order_id = order_id;
+  },
+
+
+  /**
+   * Inits the boxdrop eLogistics shipment generation button
+   *
+   * @author sweber
+   */
+  init: function(products, shipments) {
+
     this.products  = products;
     this.shipments = shipments;
 
@@ -465,6 +475,55 @@ var bShipmentOrderAdminDetail = {
     boxdrop.modalBox.align();
     boxdrop.shipment.updateParcelWrapperHeight();
     window.setTimeout(function() {boxdrop.shipment.updateParcelWrapperHeight()}, 200);
+  },
+  
+  
+  /**
+   * Shows a dropdown with available carriers to change if wanted
+   *
+   * @author sweber
+   */
+  createCarrierChangeSelect: function (carriers) {
+  	
+  	$(document).on('change', '#bshp-override-carrier', function() { boxdrop.orderAdminDetail.changeCarrier(); });
+  	
+  	if (carriers.length > 0) {
+  		
+      var carrier_td      = $('#shipping_table tbody td:nth-child(3)');
+      var original_text   = carrier_td.html();
+      var carrier_options = '';
+  		
+      for (i in carriers) {
+  			
+        var carrier  = carriers[i];
+        var selected = (carrier.name == original_text); 
+        carrier_options += '<option value="'+carrier.id_carrier+'" '+selected+'>'+carrier.name+'</option>';
+      }
+  		
+      carrier_td.html('<select name="override_carrier" id="bshp-override-carrier">'+carrier_options+'</select>');
+  	}
+  },
+
+
+  /**
+   * Changes the carrier for an order
+   *
+   * @author sweber
+   */
+  changeCarrier: function() {
+
+    if (!boxdrop.getAjaxState()) {
+
+      boxdrop.toggleAjaxState();
+      $.ajax(boxdrop.base_dir+'ajax/ajax.php', {async:    true,
+                                                cache:    false,
+                                                complete: function() { boxdrop.toggleAjaxState(); },
+                                                data:     {action:     'admChangeCarrier',
+                                                           order_id:   boxdrop.orderAdminDetail.order_id,
+                                                           carrier_id: $('#bshp-override-carrier').val()},
+                                                dataType: 'script',
+                                                method:   'POST'});
+    }
   }
 };
 

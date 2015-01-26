@@ -170,6 +170,56 @@
 		}
 
 		/**
+		 * Changes the id_carrier in 
+		 * - cart
+		 * - order
+		 * 
+		 * Will create an entry in boxdrop_order, if not yet existing
+		 * We are NOT changing the shipping price, as the change was made by admin, not by user.
+		 * 
+		 * @author sweber <sw@boxdrop.com>
+		 * @return string
+		 */
+		private function admChangeCarrier()
+		{
+			$carrier_id = (int)Tools::getValue('carrier_id');
+			$carrier = new Carrier($carrier_id);
+			$order_id = (int)Tools::getValue('order_id');
+			$order = new Order($order_id);
+			$cart = new Cart($order->id_cart);
+			$changed = false;
+			
+			if ($carrier instanceof Carrier &&
+			$cart instanceof Cart &&
+			$order instanceof Order) {
+				
+				$order->id_carrier = $carrier_id;
+				$order->save();
+				$cart->id_carrier = $carrier_id;
+				$cart->save();
+				
+				$boxdrop_order = new BoxdropOrder($order->id_cart);
+				
+				if ($boxdrop_order->id_cart == 0) {
+					
+					$boxdrop_order->id_cart = $order->id_cart;
+					$boxdrop_order->id_customer = $order->id_customer;
+					$boxdrop_order->id_order = $order->id;
+					$boxdrop_order->save();
+				}
+				
+				$changed = true;
+			}
+
+
+			$this->smarty->assign(array(
+				'changed' => $changed,
+			));
+
+			return $this->display(realpath(dirname(__FILE__).'/../').'/boxdropshipment.php', 'adminUpdateOrderCarrier.tpl');
+		}
+
+		/**
 		 * Validates a request:
 		 *
 		 * - Basic authentication is already done by PrestaShop core
