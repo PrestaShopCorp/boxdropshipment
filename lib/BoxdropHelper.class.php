@@ -274,32 +274,6 @@
 	     */
 	    public static function convertFormNumberToFloat($number)
 		{
-	      $number = (string) $number;
-	      $has_dot = strpos($number, '.');
-	      $has_comma = strpos($number, ',');
-	      $return = $number;
-	
-	      if ($has_dot !== false && $has_comma !== false)
-	      {
-	        $return = str_replace('.', '',  $return);
-	        $return = str_replace(',', '.', $return);
-	      }
-	      else if ($has_dot !== false && $has_comma === false)
-	      {
-	
-	        /*
-	         * if the dot is used as a decimal divider, let him be.
-	         * otherwise, remove
-	         */
-	        $test = (int) str_replace('.', '', $number);
-	
-	        if ((int) $number == $test)
-	          $return = $test;
-	
-	      }
-	      else if ($has_dot === false && $has_comma !== false)
-	        $return = str_replace(',', '.', $return);
-	
-	      return (float) $return;
-	    }
+			return (float)str_replace(array('.', ','), array('','.'), $return);
+		}
 	}

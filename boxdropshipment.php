@@ -33,7 +33,7 @@
 	 *
 	 * @author  sweber <sw@boxdrop.com>
 	 * @package BoxdropShipment
-	 * @version 1.0.3
+	 * @version 1.0.4
 	 */
 	class BoxdropShipment extends CarrierModule
 	{
@@ -84,7 +84,7 @@
 		{
 			$this->name = 'boxdropshipment';
 			$this->tab = 'shipping_logistics';
-			$this->version = '1.0.3';
+			$this->version = '1.0.4';
 			$this->author = 'boxdrop Group AG';
 			$this->need_instance = 0;
 			$this->dependencies = array('blockcart');
@@ -144,7 +144,7 @@
 			}
 
 			if (!$this->registerHook('actionValidateOrder') || !$this->registerHook('displayCarrierList') ||
-			!$this->registerHook('updateCarrier') || !$this->registerHook('displayAdminOrderContentShip'))
+			!$this->registerHook('updateCarrier') || !$this->registerHook('displayAdminOrder'))
 			{
 				$this->_errors[] = $this->l('Could not register hooks');
 				return false;
@@ -492,7 +492,7 @@
 		 * @param  array  $params
 		 * @return string
 		 */
-		public function hookDisplayAdminOrderContentShip($params)
+		public function hookDisplayAdminOrder($params)
 		{
 			$carriers = array();
 			$cart = $params['cart'];

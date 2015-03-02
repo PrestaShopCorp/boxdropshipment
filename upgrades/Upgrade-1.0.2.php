@@ -20,16 +20,17 @@ if (!defined('_PS_VERSION_'))
 	exit;
 
 /**
- * Upgrades a module to 1.0.3.
+ * Upgrades a module to 1.0.4.
  * Inserts the insurance column into the DB schema
  * 
  * @author sweber <sw@boxdrop.com>
  * @param  mixed  $object
  * @return boolean
  */
-function upgrade_module_1_0_3()
+function upgrade_module_1_0_4($object)
 {
-	return Db::getInstance()->execute('ALTER TABLE `'._DB_PREFIX_.'boxdrop_order_shipment` ADD
+	return ($object->registerHook('displayAdminOrder') &&
+	Db::getInstance()->execute('ALTER TABLE `'._DB_PREFIX_.'boxdrop_order_shipment` ADD
 	 `insurance_amount` DECIMAL(7,2) NOT NULL DEFAULT \'0.00\' 
-	 AFTER `airwaybill`;');
+	 AFTER `airwaybill`;'));
 }
