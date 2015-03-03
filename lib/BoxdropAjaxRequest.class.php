@@ -104,11 +104,12 @@
 			$order_id = (int)Tools::getValue('order_id');
 			$parceldata = array();
 			parse_str(Tools::getValue('parceldata'), $parceldata);
+			$insurance_amount = (isset($parceldata['insurance'])) ? $parceldata['insurance'] : 0;
 			$parceldata = (isset($parceldata['product-parcel'])) ? $parceldata['product-parcel'] : array();
 			$order = new Order($order_id);
 			$boxdrop_order = BoxdropOrder::retrieveByCartId($order->id_cart);
 			$employee_id = $this->context->cookie->__get('id_employee');
-			$smarty_data = $boxdrop_order->createBoxdropShipment($order, $parceldata, $employee_id, $this->sdk);
+			$smarty_data = $boxdrop_order->createBoxdropShipment($order, $parceldata, $insurance_amount, $employee_id, $this->sdk);
 			$this->smarty->assign($smarty_data);
 			return $this->display(realpath(dirname(__FILE__).'/../').'/boxdropshipment.php', 'adminAjaxCreateConsignment.tpl');
 		}
@@ -166,6 +167,56 @@
 				(float)Tools::getValue('shp_price'));
 			}
 			return $this->display(realpath(dirname(__FILE__).'/../').'/boxdropshipment.php', 'adminUpdateShippingPreset.tpl');
+		}
+
+		/**
+		 * Changes the id_carrier in 
+		 * - cart
+		 * - order
+		 * 
+		 * Will create an entry in boxdrop_order, if not yet existing
+		 * We are NOT changing the shipping price, as the change was made by admin, not by user.
+		 * 
+		 * @author sweber <sw@boxdrop.com>
+		 * @return string
+		 */
+		private function admChangeCarrier()
+		{
+			$carrier_id = (int)Tools::getValue('carrier_id');
+			$carrier = new Carrier($carrier_id);
+			$order_id = (int)Tools::getValue('order_id');
+			$order = new Order($order_id);
+			$cart = new Cart($order->id_cart);
+			$changed = false;
+			
+			if ($carrier instanceof Carrier &&
+			$cart instanceof Cart &&
+			$order instanceof Order) {
+				
+				$order->id_carrier = $carrier_id;
+				$order->save();
+				$cart->id_carrier = $carrier_id;
+				$cart->save();
+				
+				$boxdrop_order = new BoxdropOrder($order->id_cart);
+				
+				if ($boxdrop_order->id_cart == 0) {
+					
+					$boxdrop_order->id_cart = $order->id_cart;
+					$boxdrop_order->id_customer = $order->id_customer;
+					$boxdrop_order->id_order = $order->id;
+					$boxdrop_order->save();
+				}
+				
+				$changed = true;
+			}
+
+
+			$this->smarty->assign(array(
+				'changed' => $changed,
+			));
+
+			return $this->display(realpath(dirname(__FILE__).'/../').'/boxdropshipment.php', 'adminUpdateOrderCarrier.tpl');
 		}
 
 		/**

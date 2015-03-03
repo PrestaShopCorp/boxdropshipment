@@ -24,13 +24,16 @@
 	AUTO_INCREMENT, `id_cart` int(10) unsigned NOT NULL, `boxdrop_shop_id` bigint(20) unsigned NOT NULL, `id_customer` int(10) unsigned NOT NULL, 
 	`id_order` int(10) unsigned NOT NULL, `created_at` DATETIME NOT NULL, PRIMARY KEY (`boxdrop_order_id`), KEY `id_cart` (`id_cart`,`id_order`) 
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1 ;';
-	$statements[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.BoxdropOrderShipment::$definition['table'].'` ( `boxdrop_order_shipment_id` bigint(20) 
-	unsigned NOT NULL AUTO_INCREMENT, `boxdrop_order_id` bigint(20) unsigned NOT NULL, `id_order` int(10) unsigned NOT NULL, `id_order_carrier` 
-	int(10) unsigned NOT NULL, `shipment_mode` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT \'\', `airwaybill` varchar(100) COLLATE utf8_bin NOT 
-	NULL DEFAULT \'\', `pickup_date` date NOT NULL, `label` varchar(250) COLLATE utf8_bin NOT NULL,  `shipping_weight` decimal(6,2) unsigned NOT 
-	NULL, `parcel_count` int(10) unsigned NOT NULL, `current_status` int(10) unsigned NOT NULL, `created_at` datetime NOT NULL, `created_by` int(10) 
-	unsigned NOT NULL,  PRIMARY KEY (`boxdrop_order_shipment_id`), KEY `boxdrop_order_id` (`boxdrop_order_id`,`id_order`)) ENGINE=InnoDB DEFAULT 
-	CHARSET=utf8 COLLATE=utf8_bin AUTO_INCREMENT=1;';
+	$statements[] = 'CREATE TABLE `'._DB_PREFIX_.BoxdropOrderShipment::$definition['table'].'`  ( `boxdrop_order_shipment_id` bigint(20) unsigned NOT 
+	NULL, `boxdrop_order_id` bigint(20) unsigned NOT NULL, `id_order` int(10) unsigned NOT NULL, `id_order_carrier` int(10) unsigned NOT NULL,
+	`shipment_mode` varchar(50) COLLATE utf8_bin NOT NULL DEFAULT \'\', `airwaybill` varchar(100) COLLATE utf8_bin NOT NULL DEFAULT \'\',
+	`insurance_amount` decimal(7,2) NOT NULL DEFAULT \'0.00\', `pickup_date` date NOT NULL, `label` varchar(250) COLLATE utf8_bin NOT NULL,
+	`shipping_weight` decimal(6,2) unsigned NOT NULL, `parcel_count` int(10) unsigned NOT NULL, `current_status` int(10) unsigned NOT NULL,
+	`created_at` datetime NOT NULL, `created_by` int(10) unsigned NOT NULL ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;';
+	$statements[] = 'ALTER TABLE `'._DB_PREFIX_.BoxdropOrderShipment::$definition['table'].'` ADD PRIMARY KEY (`boxdrop_order_shipment_id`), ADD KEY 
+	`boxdrop_order_id` (`boxdrop_order_id`,`id_order`);';
+	$statements[] = 'ALTER TABLE `'._DB_PREFIX_.BoxdropOrderShipment::$definition['table'].'` MODIFY `boxdrop_order_shipment_id` bigint(20) unsigned 
+	NOT NULL AUTO_INCREMENT;';
 	$statements[] = 'CREATE TABLE IF NOT EXISTS `'._DB_PREFIX_.BoxdropOrderShipmentParcel::$definition['table'].'`(`boxdrop_order_shipment_parcel_id` 
 	bigint(20) unsigned NOT NULL AUTO_INCREMENT, `boxdrop_order_shipment_id` bigint(20) unsigned NOT NULL, `depth` int(10) unsigned NOT NULL 
 	DEFAULT \'0\', `length` int(10) unsigned NOT NULL DEFAULT \'0\', `width` int(10) unsigned NOT NULL DEFAULT \'0\', `volumetric_weight` float(8,3) 

@@ -35,12 +35,20 @@
   font-size: 16px;
 }
 
-.bshp-product-table select {
-  width: 120px;
-  height: 30px;
-  font-size: 14px;
+.bshp-product-table select,
+.bshp-biginput {
+  width: 120px !important;
+  height: 30px !important;
+  font-size: 14px !important;
 }
 
+.bshp-leftm-5 {
+  margin-left: 5px;
+}
+
+.bshp-topm-20 {
+  margin-top: 20px;
+}
 
 .bshp-product-table {
   border-collapse: collapse;

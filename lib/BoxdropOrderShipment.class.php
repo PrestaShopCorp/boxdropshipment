@@ -32,6 +32,7 @@
 		public $current_status_l;
 		public $id_order;
 		public $id_order_carrier;
+		public $insurance_amount;
 		public $label;
 		public $order_carrier;
 		public $parcel_count;
@@ -65,6 +66,10 @@
 				'airwaybill' => array(
 					'type' => self::TYPE_STRING,
 					'validate' => 'isString'
+				),
+				'insurance_amount' => array(
+					'type' => self::TYPE_FLOAT,
+					'validate' => 'isUnsignedFloat'
 				),
 				'pickup_date' => array(
 					'type' => self::TYPE_DATE,
@@ -141,7 +146,11 @@
 			$filename = uniqid($this->id_order.'_'.$this->airwaybill.'_').'.pdf';
 			$this->label = $date_path.$filename;
 			BoxdropHelper::checkAndCreateWriteable($base_path.$date_path);
+			$old_umask = umask();
+			umask(0);
 			file_put_contents($base_path.$date_path.$filename, base64_decode($label));
+			chmod($base_path.$date_path.$filename, 0775);
+			umask($old_umask);
 		}
 
 		/**

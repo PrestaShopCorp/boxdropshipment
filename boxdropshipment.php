@@ -33,7 +33,7 @@
 	 *
 	 * @author  sweber <sw@boxdrop.com>
 	 * @package BoxdropShipment
-	 * @version 1.0.1
+	 * @version 1.0.4
 	 */
 	class BoxdropShipment extends CarrierModule
 	{
@@ -84,7 +84,7 @@
 		{
 			$this->name = 'boxdropshipment';
 			$this->tab = 'shipping_logistics';
-			$this->version = '1.0.2';
+			$this->version = '1.0.4';
 			$this->author = 'boxdrop Group AG';
 			$this->need_instance = 0;
 			$this->dependencies = array('blockcart');
@@ -143,7 +143,8 @@
 				return false;
 			}
 
-			if (!$this->registerHook('actionValidateOrder') || !$this->registerHook('displayCarrierList') || !$this->registerHook('updateCarrier'))
+			if (!$this->registerHook('actionValidateOrder') || !$this->registerHook('displayCarrierList') ||
+			!$this->registerHook('updateCarrier') || !$this->registerHook('displayAdminOrder'))
 			{
 				$this->_errors[] = $this->l('Could not register hooks');
 				return false;
@@ -188,7 +189,8 @@
 				return false;
 			}
 
-			if (!$this->unregisterHook('actionValidateOrder') || !$this->unregisterHook('displayCarrierList') || !$this->unregisterHook('updateCarrier'))
+			if (!$this->unregisterHook('actionValidateOrder') || !$this->unregisterHook('displayCarrierList') ||
+			!$this->unregisterHook('updateCarrier') || !$this->unregisterHook('displayAdminOrderContentShip'))
 			{
 				$this->_errors[] = $this->l('Could not delete hooks');
 				return false;
@@ -474,13 +476,42 @@
 				return '';
 
 			$this->smarty->assign(array(
-				'order_id' => $order_id,
 				'products' => BoxdropOrder::getProductsToBeShipped($order_id),
 				'shipments' => BoxdropOrderShipment::getByOrderId($order_id),
 				'tpl_path' => _PS_MODULE_DIR_.'boxdropshipment/views/templates/hook/'
 			));
 
 			return $this->display(__FILE__, 'adminOrderDetailShipping.tpl');
+		}
+
+		/**
+		 * Admin order detail view. This will be displayed right obove the shipment list in the shipment box.
+		 * Loading point for boxdrop scripts and carrier change option
+		 *
+		 * @author sweber <sw@boxdrop.com>
+		 * @param  array  $params
+		 * @return string
+		 */
+		public function hookDisplayAdminOrder($params)
+		{
+			$carriers = array();
+			$cart = $params['cart'];
+
+			if (is_object($cart))
+				if (!in_array($cart->id_carrier, array_values(BoxdropHelper::getCarrierIds())))
+				{
+					$delivery_address = new Address($params['order']->id_address_delivery);
+					$delivery_address_country = new Country($delivery_address->id_country);
+					$carriers = Carrier::getCarriers($cart->id_lang, true, false, $delivery_address_country->id_zone, null, Carrier::ALL_CARRIERS);
+				}
+
+			$this->smarty->assign(array(
+				'carriers' => Tools::jsonEncode($carriers),
+				'order_id' => (int)Tools::getValue('id_order'),
+				'tpl_path' => _PS_MODULE_DIR_.'boxdropshipment/views/templates/hook/'
+			));
+
+			return $this->display(__FILE__, 'adminOrderDetailCarrierSelect.tpl');
 		}
 
 		/**
@@ -518,7 +549,6 @@
 			}
 			return true;
 		}
-
 
 		/**
 		 * Updates carrier IDs upon change

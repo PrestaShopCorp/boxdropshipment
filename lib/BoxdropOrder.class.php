@@ -82,15 +82,17 @@
 		 * @author sweber     <sw@boxdrop.com>
 		 * @param  Order      $order
 		 * @param  array      $parceldata
+		 * @param  float      $insurance_amount
 		 * @param  integer    $employee_id
 		 * @param  BoxdropSDK $sdk
 		 * @return array
 		 */
-		public function createBoxdropShipment($order, $parceldata, $employee_id, $sdk)
+		public function createBoxdropShipment($order, $parceldata, $insurance_amount, $employee_id, $sdk)
 		{
 			$api_parcels = array();
 			$boxdrop_parcels = array();
 			$boxdrop_shipment = BoxdropOrderShipment::create($employee_id, $order);
+			$insurance_amount = BoxdropHelper::convertFormNumberToFloat($insurance_amount);
 			$smarty_data = array();
 			foreach ($parceldata as $order_detail_id => $parcel_number)
 			{
@@ -108,7 +110,7 @@
 
 			$api_data = array(
 				'customer_reference' => $order->reference,
-				'insurance_amount' => 0,
+				'insurance_amount' => $insurance_amount,
 				'parcels' => $api_parcels,
 				'receiver' => BoxdropHelper::getReceiverAddressByOrder($order),
 				'sender' => BoxdropHelper::getDefaultSenderAddress(),
@@ -128,6 +130,7 @@
 					$boxdrop_shipment->order_carrier->save();
 					$boxdrop_shipment->boxdrop_order_id = $this->id;
 					$boxdrop_shipment->airwaybill = $response->airwaybill;
+					$boxdrop_shipment->insurance_amount = $insurance_amount;
 					$boxdrop_shipment->pickup_date = date('Y-m-d', $response->pickup_ts);
 					$boxdrop_shipment->boxdrop_order_number = $response->order_no;
 					$boxdrop_shipment->createShipmentLabel($response->label);

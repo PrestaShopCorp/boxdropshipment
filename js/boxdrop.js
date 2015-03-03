@@ -70,6 +70,9 @@ var bShipment = {
              '<div class="bshp-fl">'+
                '<div class="bshp-products"></div>'+
                '<div class="bshp-clr"></div>'+
+               '<label for="bshp-insurance" class="bshp-fl bshp-leftm-5 bshp-topm-20">'+bTranslation.txtInsurance+'</label>'+
+               '<div class="bshp-clr"></div>'+
+               '<input type="text" class="bshp-fl bshp-biginput bshp-leftm-5" id="bshp-insurance" name="insurance" value="" placeholder="0.00" />'+
                '<input type="button" class="button bshp-fr btn btn-default" name="submit" value="'+bTranslation.btnCreateShipment+'" />'+
                '<div class="clear"></div>'+
              '</div>'+
@@ -77,7 +80,8 @@ var bShipment = {
            '</form>';
 
     this.canvas.html(html);
-    this.canvas.find('input').first().unbind('click').bind('click', function() { boxdrop.shipment.createShipment(); });
+    this.canvas.find('input[type=button]').first().unbind('click').bind('click', function() { boxdrop.shipment.createShipment(); });
+    this.canvas.find('#bshp-insurance').on('keyup', function() { boxdrop.isNumericValue(this, true); if (this.value > 10000) { this.value = 10000; }});
     this.product_form    = this.canvas.find('#bshp-consignment-form');
     this.parcel_wrapper  = this.canvas.find('.bshp-parcels-wrapper').first();
     this.parcel_list     = this.parcel_wrapper.find('.bshp-parcels').first();
@@ -323,13 +327,23 @@ var bShipmentOrderAdminDetail = {
   shipment_lines:     '',
 
   /**
-   * prepares all we need
+   * sets the order id
    *
    * @author sweber
    */
-  init: function(products, shipments, order_id) {
+  setOrderId: function(order_id) {
 
-    this.order_id  = order_id;
+    this.order_id = order_id;
+  },
+
+
+  /**
+   * Inits the boxdrop eLogistics shipment generation button
+   *
+   * @author sweber
+   */
+  init: function(products, shipments) {
+
     this.products  = products;
     this.shipments = shipments;
 
@@ -461,6 +475,55 @@ var bShipmentOrderAdminDetail = {
     boxdrop.modalBox.align();
     boxdrop.shipment.updateParcelWrapperHeight();
     window.setTimeout(function() {boxdrop.shipment.updateParcelWrapperHeight()}, 200);
+  },
+  
+  
+  /**
+   * Shows a dropdown with available carriers to change if wanted
+   *
+   * @author sweber
+   */
+  createCarrierChangeSelect: function (carriers) {
+  	
+  	$(document).on('change', '#bshp-override-carrier', function() { boxdrop.orderAdminDetail.changeCarrier(); });
+  	
+  	if (carriers.length > 0) {
+  		
+      var carrier_td      = $('#shipping_table tbody td:nth-child(3)');
+      var original_text   = carrier_td.html();
+      var carrier_options = '';
+  		
+      for (i in carriers) {
+  			
+        var carrier  = carriers[i];
+        var selected = (carrier.name == original_text); 
+        carrier_options += '<option value="'+carrier.id_carrier+'" '+selected+'>'+carrier.name+'</option>';
+      }
+  		
+      carrier_td.html('<select name="override_carrier" id="bshp-override-carrier">'+carrier_options+'</select>');
+  	}
+  },
+
+
+  /**
+   * Changes the carrier for an order
+   *
+   * @author sweber
+   */
+  changeCarrier: function() {
+
+    if (!boxdrop.getAjaxState()) {
+
+      boxdrop.toggleAjaxState();
+      $.ajax(boxdrop.base_dir+'ajax/ajax.php', {async:    true,
+                                                cache:    false,
+                                                complete: function() { boxdrop.toggleAjaxState(); },
+                                                data:     {action:     'admChangeCarrier',
+                                                           order_id:   boxdrop.orderAdminDetail.order_id,
+                                                           carrier_id: $('#bshp-override-carrier').val()},
+                                                dataType: 'script',
+                                                method:   'POST'});
+    }
   }
 };
 
@@ -868,5 +931,35 @@ var boxdrop = {
   getAjaxState: function() {
 
     return this.inAjaxRequest;
+  },
+  
+
+  /**
+   * Checks whether a given element contains a number
+   *
+   * @author sweber
+   */
+  isNumericValue: function(element, allow_decimals) {
+
+    var new_value = element.value;
+
+    if (new_value != '') {
+
+      if (allow_decimals) {
+
+        new_value = new_value.replace(/\,/g, '.');
+
+        if (new_value != parseFloat(new_value)) {
+
+          element.value = parseFloat(new_value.replace(/[^0-9\.,]/g, '')).toFixed(2).replace('.', ',');
+        }
+      } else {
+
+        if (new_value !== parseInt(new_value, 10)) {
+
+          element.value = new_value.replace(/[^0-9]/g, '');
+        }
+      }
+    }
   }
 };

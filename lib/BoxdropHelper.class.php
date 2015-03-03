@@ -28,7 +28,9 @@
 		const ENV_FRONTEND = 'FrontOffice';
 		/**
 		 * Tries to find the admin folder, as the name has a random suffix.
-		 * Expects the "admin" keyword to be somewhere in the folder name.
+		 * As there are configurations out there with admin folders without any "admin" in fodler name,
+		 * we'll check the index.php file inside each main subfolder fo the the string
+		 * "define('_PS_ADMIN_DIR_', getcwd()"
 		 *
 		 * @author sweber <sw@boxdrop.com>
 		 * @return null|string
@@ -45,10 +47,15 @@
 					$absolute_element = $root_dir.$dir_content;
 					if (is_dir($absolute_element))
 					{
-						if (strpos($dir_content, 'admin') !== false)
+						$index_file = $absolute_element.'/index.php';
+						if (file_exists($index_file))
 						{
-							$admin_dir = $absolute_element;
-							break;
+							$file_contents = file_get_contents($index_file);
+							if (strpos($file_contents, "define('_PS_ADMIN_DIR_', getcwd()") !== false)  
+							{								
+								$admin_dir = $absolute_element;
+								break;
+							}
 						}
 					}
 				}
@@ -184,7 +191,7 @@
 			{
 				$old_umask = umask();
 				umask(0);
-				mkdir($path, 0774, true);
+				mkdir($path, 0775, true);
 				umask($old_umask);
 			}
 		}
@@ -240,7 +247,6 @@
 			return $sdk;
 		}
 
-
 		/**
 		 * Returns an array out of the given string. 
 		 * Wrapped explode, to avoid creating an array with an empty value upon empty $input 
@@ -256,5 +262,18 @@
 				return array();
 			else 
 				return explode($delimiter, $input);
+		}
+
+	
+	    /**
+	     * Converts user entered form numbers into float values.
+	     *
+	     * @author sweber <sw@boxdrop.com>
+	     * @param  mixed  $number
+	     * @return float
+	     */
+	    public static function convertFormNumberToFloat($number)
+		{
+			return (float)str_replace(array('.', ','), array('','.'), $return);
 		}
 	}
