@@ -863,7 +863,7 @@ var boxdrop = {
   carrierList:      {},
   inAjaxRequest:    false,
   modalBox:         {},
-  orderAdminDetail: {},
+  orderAdminDetail: null,
   shipment:         {},
 
   init: function(base_dir) {
