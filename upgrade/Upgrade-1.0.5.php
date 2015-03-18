@@ -29,5 +29,5 @@ if (!defined('_PS_VERSION_'))
  */
 function upgrade_module_1_0_5($object)
 {
-	return ($object->registerHook('displayAdminOrderContentShip'));
+	return ($object->unregisterHook('displayAdminOrderContentShip'));
 }

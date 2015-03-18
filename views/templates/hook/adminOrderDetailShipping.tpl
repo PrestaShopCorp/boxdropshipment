@@ -26,13 +26,13 @@
     var carriers       = boxdrop.convertEscapedToJSON('{$carriers|escape:"url"}');
 
     boxdrop.init('{$module_dir|escape:'htmlall':'UTF-8'}', '{$token|escape:'htmlall':'UTF-8'}');
+    boxdrop.orderAdminDetail.setOrderId('{$order_id|escape:'htmlall':'UTF-8'}');
     
     if (carriers.length == 0) {
     
       boxdrop.orderAdminDetail.init(bshp_products, bshp_shipments);
     } else {
     
-      boxdrop.orderAdminDetail.setOrderId('{$order_id|escape:'htmlall':'UTF-8'}');
       boxdrop.orderAdminDetail.createCarrierChangeSelect(carriers);
     }
   });
