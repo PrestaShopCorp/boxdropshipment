@@ -33,7 +33,7 @@
 	 *
 	 * @author  sweber <sw@boxdrop.com>
 	 * @package BoxdropShipment
-	 * @version 1.0.4
+	 * @version 1.0.5
 	 */
 	class BoxdropShipment extends CarrierModule
 	{
@@ -84,7 +84,7 @@
 		{
 			$this->name = 'boxdropshipment';
 			$this->tab = 'shipping_logistics';
-			$this->version = '1.0.4';
+			$this->version = '1.0.5';
 			$this->author = 'boxdrop Group AG';
 			$this->need_instance = 0;
 			$this->dependencies = array('blockcart');
@@ -190,7 +190,7 @@
 			}
 
 			if (!$this->unregisterHook('actionValidateOrder') || !$this->unregisterHook('displayCarrierList') ||
-			!$this->unregisterHook('updateCarrier') || !$this->unregisterHook('displayAdminOrderContentShip'))
+			!$this->unregisterHook('updateCarrier') || !$this->unregisterHook('displayAdminOrder'))
 			{
 				$this->_errors[] = $this->l('Could not delete hooks');
 				return false;
@@ -463,30 +463,7 @@
 		}
 
 		/**
-		 * Sneaking into the admin order detail view. This will be displayed right under the shipment list in the shipment box.
-		 * We'd really love to replace the whole box, but it is coupled too tight into the main template...
-		 *
-		 * @author sweber <sw@boxdrop.com>
-		 * @return string
-		 */
-		public function displayInfoByCart()
-		{
-			$order_id = (int)Tools::getValue('id_order');
-			if ($order_id == 0)
-				return '';
-
-			$this->smarty->assign(array(
-				'products' => BoxdropOrder::getProductsToBeShipped($order_id),
-				'shipments' => BoxdropOrderShipment::getByOrderId($order_id),
-				'tpl_path' => _PS_MODULE_DIR_.'boxdropshipment/views/templates/hook/'
-			));
-
-			return $this->display(__FILE__, 'adminOrderDetailShipping.tpl');
-		}
-
-		/**
-		 * Admin order detail view. This will be displayed right obove the shipment list in the shipment box.
-		 * Loading point for boxdrop scripts and carrier change option
+		 * Enables boxdrop features inside the admin view.
 		 *
 		 * @author sweber <sw@boxdrop.com>
 		 * @param  array  $params
@@ -496,6 +473,10 @@
 		{
 			$carriers = array();
 			$cart = $params['cart'];
+			$order_id = (int)Tools::getValue('id_order');
+
+			if ($order_id == 0)
+				return '';
 
 			if (is_object($cart))
 				if (!in_array($cart->id_carrier, array_values(BoxdropHelper::getCarrierIds())))
@@ -508,11 +489,14 @@
 			$this->smarty->assign(array(
 				'carriers' => Tools::jsonEncode($carriers),
 				'order_id' => (int)Tools::getValue('id_order'),
+				'products' => BoxdropOrder::getProductsToBeShipped($order_id),
+				'shipments' => BoxdropOrderShipment::getByOrderId($order_id),
 				'tpl_path' => _PS_MODULE_DIR_.'boxdropshipment/views/templates/hook/'
 			));
 
-			return $this->display(__FILE__, 'adminOrderDetailCarrierSelect.tpl');
+			return $this->display(__FILE__, 'adminOrderDetailShipping.tpl');
 		}
+
 
 		/**
 		 * Loads a file containing SQL queries and executes them.
