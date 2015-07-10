@@ -4,7 +4,7 @@ global $_MODULE;
 $_MODULE = array();
 $_MODULE['<{boxdropshipment}prestashop>boxdropshipment_876f23178c29dc2552c0b48bf23cd9bd'] = 'Are you sure you want to uninstall?';
 $_MODULE['<{boxdropshipment}prestashop>boxdropshipment_e60b7b6e292874e6f377f0798fdf417a'] = 'Offers an easy 360° shipment creation and handling integration into PrestaShop using DHL Express and Economy services.';
-$_MODULE['<{boxdropshipment}prestashop>boxdropshipment_2103719b4abaf4d5bc8b210826f1a33a'] = 'DHL powered by boxdrop® eLogistics';
+$_MODULE['<{boxdropshipment}prestashop>boxdropshipment_2103719b4abaf4d5bc8b210826f1a33a'] = 'DHL eLogistics by boxdrop®';
 $_MODULE['<{boxdropshipment}prestashop>boxdropshipment_891766f3c684539bb319fe2c07ddb4ec'] = 'Please complete the configuration of your \"DHL\" module';
 $_MODULE['<{boxdropshipment}prestashop>boxdropshipment_875a66f201549457fd00c822c9734c85'] = 'Could not find the cURL extension. Please install / activate cURL for PHP in order to use this module.';
 $_MODULE['<{boxdropshipment}prestashop>boxdropshipment_a5b0fa2d086bf9fdafcd417fa8849fe3'] = 'Could not find the mcrypt extension. Please install / activate mcrypt for PHP in order to use this module.';
