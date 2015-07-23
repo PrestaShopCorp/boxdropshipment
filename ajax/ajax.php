@@ -39,11 +39,15 @@
 				define('PS_ADMIN_DIR', _PS_ADMIN_DIR_);
 
 			$_GET['controller'] = 'AdminCarriersController';
+
 			/*
 			 * its important to load config.inc.php after defining _PS_ADMIN_DIR_ to get the full admin context!
 			 */
 			require_once (realpath(dirname(__FILE__).'/../../../').'/config/config.inc.php');
-			require (_PS_ADMIN_DIR_.'/functions.php');
+
+			if (!BoxdropHelper::isCloudInstance())
+				require (_PS_ADMIN_DIR_.'/functions.php');
+
 			$context = Context::getContext();
 			$context->controller = new AdminCarriersController();
 		}

@@ -442,7 +442,7 @@ var bShipmentOrderAdminDetail = {
                                '<td>'+shipment.shipping_weight+'</td>'+
                                '<td>'+shipment.parcel_count+'</td>'+
                                '<td>'+
-                                 '<a href="http://www.dhl.it/content/it/it/express/ricerca.shtml?brand=DHL&AWB'+shipment.airwaybill+'%0D%0A" target="_blank">'+shipment.airwaybill+'</a>'+
+                                 '<a href="http://www.dhl.it/content/it/it/express/ricerca.shtml?brand=DHL&AWB='+shipment.airwaybill+'%0D%0A" target="_blank">'+shipment.airwaybill+'</a>'+
                                  ' <a href="'+boxdrop.base_dir+'data/'+shipment.label+'" target="_blank" id="bshp-awb-link"><img src="'+boxdrop.base_dir+'img/icons/print.png" class="bshp-form-icon" alt="" /></a>'+
                                '</td>'+
                              '</tr>';
