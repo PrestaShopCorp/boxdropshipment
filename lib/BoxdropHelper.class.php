@@ -39,28 +39,58 @@
 		{
 			$admin_dir = null;
 			$root_dir = realpath(dirname(__FILE__).'/../../../').'/';
-			$directories = scandir($root_dir);
-			foreach ($directories as $dir_content)
+			if (!self::isCloudInstance())
 			{
-				if ($dir_content != '.' && $dir_content != '..')
+				$directories = scandir($root_dir);
+				foreach ($directories as $dir_content)
 				{
-					$absolute_element = $root_dir.$dir_content;
-					if (is_dir($absolute_element))
+					if ($dir_content != '.' && $dir_content != '..')
 					{
-						$index_file = $absolute_element.'/index.php';
-						if (file_exists($index_file))
+						$absolute_element = $root_dir.$dir_content;
+						if (is_dir($absolute_element))
 						{
-							$file_contents = file_get_contents($index_file);
-							if (strpos($file_contents, "define('_PS_ADMIN_DIR_', getcwd()") !== false)  
-							{								
-								$admin_dir = $absolute_element;
-								break;
+							$index_file = $absolute_element.'/index.php';
+							if (file_exists($index_file))
+							{
+								$file_contents = file_get_contents($index_file);
+								if (strpos($file_contents, "define('_PS_ADMIN_DIR_', getcwd()") !== false)  
+								{								
+									$admin_dir = $absolute_element;
+									break;
+								}
 							}
 						}
 					}
 				}
+			} 
+			else 
+			{
+				list ($empty, $home, $user) = explode('/', $root_dir);
+				$admin_dir = '/home/'.$user{0}.'/'.$user{1}.'/'.$user{2}.'/'.$user.'/www/backoffice/';
 			}
 			return $admin_dir;
+		}
+		
+		
+		/**
+		 * Returns boolean wheter this installation is a PrestaShop cloud one
+		 * Wrapped in here, because for AJAX calls we have to know this PRIOR to initialize the rest of the contents
+		 * 
+		 * @author sweber <sw@boxdrop.com>
+		 * @return boolean
+		 */
+		public static function isCloudInstance()
+		{
+			if (defined('_PS_HOST_MODE_'))
+				return true;
+			
+			$root_dir = realpath(dirname(__FILE__).'/../../../').'/';
+			
+			if (!is_readable($root_dir.'webservice/') && 
+			    !is_dir($root_dir.'webservice/'))
+				return true;
+				
+			return false;
 		}
 
 		/**

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
 	<name>boxdropshipment</name>
-	<displayName><![CDATA[boxdrop&reg; eLogistics]]></displayName>
-	<version><![CDATA[1.0.5]]></version>
+	<displayName><![CDATA[DHL eLogistics by boxdrop&reg;]]></displayName>
+	<version><![CDATA[1.0.6]]></version>
 	<description><![CDATA[Offers an easy 360&deg; shipment creation and handling integration into PrestaShop using DHL Express and Economy services.]]></description>
 	<author><![CDATA[boxdrop Group AG]]></author>
 	<tab><![CDATA[shipping_logistics]]></tab>
